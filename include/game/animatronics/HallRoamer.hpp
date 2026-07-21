@@ -7,16 +7,16 @@
 
 namespace game {
     namespace animatronics {
+        /**
+         * @class HallRoamer
+         * @brief Animatronics who roam the halls (like Bonnie or Chica)
+         * @author MattMark
+         */
         class HallRoamer : public Animatronic {
             u8 closeFar;
+            std::unordered_map<u8, u8[2]> movePositions{};
 
-            /**
-             * Implements the Hall Roamer successful movement
-             */
             void move() override;
-            /**
-             * Implements the Hall Roamer successful door move
-             */
             void doorMove() override;
         };
     }
