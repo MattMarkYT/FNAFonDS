@@ -11,7 +11,7 @@ ARM_NONE_EABI_PATH	?= $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-arm-none-eabi/bin/
 # User config
 # ===========
 
-NAME		:= $(shell basename $(CURDIR))
+NAME		:= FNAFonDS
 GAME_TITLE	:= Five Nights at Freddys
 GAME_SUBTITLE	:= DS Port
 GAME_AUTHOR	:= MattMark
