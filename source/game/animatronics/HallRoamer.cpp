@@ -1,5 +1,5 @@
 #include <cstdlib>
-#include "animatronics/HallRoamer.hpp"
+#include "game/animatronics/HallRoamer.hpp"
 
 using namespace game::animatronics;
 

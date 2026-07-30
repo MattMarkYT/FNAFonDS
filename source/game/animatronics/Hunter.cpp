@@ -1,4 +1,4 @@
-#include "animatronics/Hunter.hpp"
+#include "game/animatronics/Hunter.hpp"
 
 using namespace game::animatronics;
 

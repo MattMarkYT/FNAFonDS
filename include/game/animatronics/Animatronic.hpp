@@ -2,7 +2,7 @@
 #define FNAFONDS_ANIMATRONIC_HPP
 
 #include <nds.h> // For u8 type
-#include "office/Door.hpp"
+#include "game/office/Door.hpp"
 
 namespace game {
     namespace animatronics {

@@ -1,4 +1,4 @@
-#include "animatronics/CoveDweller.hpp"
+#include "game/animatronics/CoveDweller.hpp"
 
 using namespace game::animatronics;
 

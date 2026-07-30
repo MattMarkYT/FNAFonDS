@@ -1,5 +1,5 @@
 #include <cstdlib>
-#include "animatronics/Animatronic.hpp"
+#include "game/animatronics/Animatronic.hpp"
 
 using namespace game::animatronics;
 

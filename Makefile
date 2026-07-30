@@ -14,7 +14,7 @@ ARM_NONE_EABI_PATH	?= $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-arm-none-eabi/bin/
 NAME		:= FNAFonDS
 GAME_TITLE	:= Five Nights at Freddys
 GAME_SUBTITLE	:= DS Port
-GAME_AUTHOR	:= MattMark
+GAME_AUTHOR	:= by MattMark
 GAME_ICON	:= icon.bmp
 
 # Source code paths
@@ -81,7 +81,7 @@ endif
 
 # Source files
 # ------------
-BINDIRS		:= nitrofiles/sfx
+#BINDIRS		:= nitrofiles/sfx
 DEFINES := -DPICOLIBC_INTEGER_PRINTF_SCANF
 ifneq ($(BINDIRS),)
     SOURCES_BIN	:= $(shell find -L $(BINDIRS) -name "*.bin")
@@ -101,8 +101,8 @@ endif
 SOURCES_S	:= $(shell find -L $(SOURCEDIRS) -name "*.s")
 SOURCES_C	:= $(shell find -L $(SOURCEDIRS) -name "*.c")
 SOURCES_CPP	:= $(shell find -L $(SOURCEDIRS) -name "*.cpp")
-INCLUDE_H 	:= $(shell find -L $(INCLUDEDIR) -depth -type d)
-INCLUDEDIRS += $(INCLUDE_H)
+#INCLUDE_H 	:= $(shell find -L $(INCLUDEDIR) -depth -type d)
+#INCLUDEDIRS += $(INCLUDE_H)
 
 # Compiler and linker flags
 # -------------------------
@@ -231,7 +231,7 @@ $(BUILDDIR)/%.s.o : %.s
 $(BUILDDIR)/%.c.o : %.c
 	@echo "  CC      $<"
 	@$(MKDIR) -p $(@D)
-	$(V)$(CC) $(CFLAGS) -MMD -MP -c -o $@ $<
+	$(V)$(CC) -Iinclude $(CFLAGS) -MMD -MP -c -o $@ $<
 
 $(BUILDDIR)/%.arm.c.o : %.arm.c
 	@echo "  CC      $<"
@@ -241,7 +241,7 @@ $(BUILDDIR)/%.arm.c.o : %.arm.c
 $(BUILDDIR)/%.cpp.o : %.cpp
 	@echo "  CXX     $<"
 	@$(MKDIR) -p $(@D)
-	$(V)$(CXX) $(CXXFLAGS) -MMD -MP -c -o $@ $<
+	$(V)$(CXX) -Iinclude $(CXXFLAGS) -MMD -MP -c -o $@ $<
 
 $(BUILDDIR)/%.arm.cpp.o : %.arm.cpp
 	@echo "  CXX     $<"
