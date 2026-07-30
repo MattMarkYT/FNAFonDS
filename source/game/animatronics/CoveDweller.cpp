@@ -2,6 +2,12 @@
 
 using namespace game::animatronics;
 
+void CoveDweller::movementOpportunity() {
+    if (canMove && getPosition() < getFinalPosition() && moveChance()) {
+        move();
+    }
+}
+
 void CoveDweller::move() {
     u8 position = getPosition() + 1;
     setPosition(position);
@@ -10,21 +16,16 @@ void CoveDweller::move() {
     }
 }
 
-void CoveDweller::doorMove() {
-    if (getTargetDoor()->getClosed()) {
-        setPosition(getBlockedPosition());
-    }
-    else {
-        setPosition(getPosition() + 1);
-    }
-}
-
 void CoveDweller::startCountdown() {
 
 }
 
-void CoveDweller::stopCountdown() {
+void CoveDweller::countdownDone() {
+    canMove = true;
+}
 
+void CoveDweller::stopCountdown() {
+    canMove = false;
 }
 
 void CoveDweller::leaveCove() {

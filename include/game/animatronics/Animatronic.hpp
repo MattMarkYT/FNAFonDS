@@ -19,10 +19,10 @@ namespace game {
             u8 position;                // Current Position
             u8 finalPosition;           // Position to do alt door move
             u8 blockedPosition;         // Position to return to when blocked
-            int movementTime;           //
-            int movementTimeRemainder;  //
-            int moveTimer = 0;          //
-            Door* targetDoor = nullptr;
+            u16 movementTime;           //
+            u8 movementTimeRemainder;   //
+            u16 moveTimer = 0;          //
+            Door* targetDoor = nullptr; //
 
         public:
             static constexpr u8 officePosition = -1;
@@ -33,18 +33,18 @@ namespace game {
             Animatronic(u8 aiLevel, u8 position, u8 finalPosition, u8 blockedPosition,
                         int movementTime, int movementTimeRemainder);
 
-            u8 getPosition() { return position; }
+            u8 getPosition() const { return position; }
             void setPosition(u8 newPosition) { position = newPosition; }
-            u8 getFinalPosition() { return finalPosition; }
-            u8 getBlockedPosition() { return position; }
-            Door* getTargetDoor() { return targetDoor; }
+            u8 getFinalPosition() const { return finalPosition; }
+            u8 getBlockedPosition() const { return blockedPosition; }
+            Door* getTargetDoor() const { return targetDoor; }
 
             /**
              * @brief This is run every movement interval
              */
             virtual void movementOpportunity();
 
-        private:
+        protected:
             /**
              * @brief Rolls a chance of AI Level / 20 for successful movement
              * @return boolean representing success

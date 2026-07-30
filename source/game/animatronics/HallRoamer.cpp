@@ -17,13 +17,3 @@ void HallRoamer::move() {
 
     setPosition(nextPosition);
 }
-
-void HallRoamer::doorMove() {
-    if (getTargetDoor() == nullptr) return;
-
-    if (getTargetDoor()->getClosed())
-        setPosition(getBlockedPosition());
-    else
-        setPosition(officePosition);
-
-}

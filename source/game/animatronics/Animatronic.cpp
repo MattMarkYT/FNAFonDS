@@ -35,3 +35,12 @@ void Animatronic::movementOpportunity() {
     }
 }
 
+void Animatronic::doorMove() {
+    if (getTargetDoor() == nullptr) return;
+
+    if (getTargetDoor()->getClosed())
+        setPosition(getBlockedPosition());
+    else
+        setPosition(officePosition);
+}
+

@@ -12,13 +12,19 @@ namespace game {
         class CoveDweller : public Animatronic {
             bool canMove = true;   // It fails every movement opportunity if this is false
 
+            bool getCanMove() const { return canMove; }
+
+            void movementOpportunity() override;
             void move() override;
-            void doorMove() override;
 
             /**
              * @brief This starts a countdown. When it's done, the animatronic can move
              */
             void startCountdown();
+            /**
+             * @brief Runs when countdown ends
+             */
+            void countdownDone();
             /**
              * @brief This stops any countdown and the animatronic can't move
              */
