@@ -22,7 +22,8 @@ GAME_ICON	:= icon.bmp
 
 SOURCEDIRS	?= source
 INCLUDEDIR	:= include
-NITROFSDIR	?= nitrofiles
+#NITROFSDIR	?= nitrofiles
+GFXDIRS		:= assets
 
 # DLDI and internal SD slot of DSi
 # --------------------------------
