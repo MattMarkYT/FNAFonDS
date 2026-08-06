@@ -1,6 +1,7 @@
 
 #include "game/save/Save.hpp"
 #include <nds/arm9/dldi.h>
+#include "ui/mainmenu.hpp"
 
 bool initFS(int argc, char **argv) {
     if (!fatInitDefault())
@@ -30,6 +31,14 @@ int main(int argc, char **argv) {
     if (!Save::loadGame())
         Save::setSaveInitFailed();
 
+    while (true) {
+        mainmenu();
 
+        scanKeys();
+        u16 keys_held = keysHeld();
+
+        if (keys_held & KEY_SELECT)
+            break;
+    }
 
 }
