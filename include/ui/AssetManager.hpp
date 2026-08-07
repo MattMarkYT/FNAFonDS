@@ -12,7 +12,7 @@
 #include <memory>
 #include "shared/load.h"
 
-constexpr int numOfBackgrounds = 40;
+constexpr int numOfBackgrounds = 64;
 constexpr int numOfSprites = 20;
 constexpr int spritesOAMSize = 16;
 
@@ -97,7 +97,7 @@ namespace ui {
      * High-level interface for loading and rendering backgrounds and sprites
      */
     class AssetManager {
-        int bgs[2] = {0, 0};
+        int bgs[4] = {0, 0, 0, 0};
 
         std::array<Background, numOfBackgrounds> backgrounds;   ///< Contains all Background data
         std::array<Sprite, numOfSprites> sprites;               ///< Contains all Sprite data
@@ -136,6 +136,8 @@ namespace ui {
                     const short unsigned int newMap[], unsigned int mapLen,
                     const short unsigned int newPal[], unsigned int palLen);
 
+        int getBackgrounds(u8 index);
+
         /**
          * Get a Background from RAM
          * @param index The index in the backgrounds array to retrieve
@@ -144,11 +146,17 @@ namespace ui {
         Background& getBackground(u8 index);
 
         /**
-         * load background into VRAM and display it
+         * Load background into VRAM and display it
          * @param index The index in the backgrounds array
          * @param layer The background layer to display it
          */
         void showBackground(u8 index, u8 layer);
+
+        /**
+         * Hide background layer
+         * @param layer The background layer to hide
+         */
+        void hideBackground(u8 layer);
 
         //
         // Sprite

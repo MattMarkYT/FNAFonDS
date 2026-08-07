@@ -7,15 +7,25 @@ AssetManager::AssetManager() {
     videoSetMode(MODE_0_2D);
     videoSetModeSub(MODE_0_2D);
 
-    vramSetPrimaryBanks(VRAM_A_MAIN_BG, VRAM_B_MAIN_SPRITE, VRAM_C_SUB_BG, VRAM_D_SUB_SPRITE);
-    vramSetBankF(VRAM_F_LCD);
+    vramSetPrimaryBanks(VRAM_A_MAIN_BG, VRAM_B_MAIN_BG, VRAM_C_SUB_BG, VRAM_D_SUB_SPRITE);
+    vramSetBankE(VRAM_E_MAIN_SPRITE);
+    vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT01);
+    vramSetBankG(VRAM_G_BG_EXT_PALETTE_SLOT23);
+    vramSetBankH(VRAM_H_SUB_BG_EXT_PALETTE);
+    vramSetBankI(VRAM_I_SUB_SPRITE_EXT_PALETTE);
 
     // BG 0: Enough for 1024 Tiles
     bgs[0] = bgInitHidden(0, BgType_Text8bpp, BgSize_T_512x256, 0, 1);
     // BG 1: Enough for 768 Tiles
     bgs[1] = bgInitHidden(1, BgType_Text8bpp, BgSize_T_512x256, 2, 5);
+    // BG 2: Enough for 1024 Tiles
+    bgs[2] = bgInitHidden(2, BgType_Text8bpp, BgSize_T_512x256, 4, 8);
+    // BG 3: Enough for 1024 Tiles
+    bgs[3] = bgInitHidden(3, BgType_Text8bpp, BgSize_T_512x256, 6, 12);
 
-    oamInit(&oamMain, SpriteMapping_1D_128, false);
+    bgExtPaletteEnable();
+
+    oamInit(&oamMain, SpriteMapping_1D_64, false);
     oamInit(&oamSub, SpriteMapping_1D_128, false);
 
 }
@@ -25,10 +35,14 @@ AssetManager::~AssetManager() {
     unloadSpriteVRAMAll(true);
 
     vramSetPrimaryBanks(VRAM_A_LCD, VRAM_B_LCD, VRAM_C_LCD, VRAM_D_LCD);
+    vramSetBankE(VRAM_E_LCD);
     vramSetBankF(VRAM_F_LCD);
+    vramSetBankG(VRAM_G_LCD);
+    vramSetBankH(VRAM_H_LCD);
+    vramSetBankI(VRAM_I_LCD);
 
-    dmaFillWords(0, reinterpret_cast<void *>(0x06000000), 0x600000);
-    dmaFillWords(0, reinterpret_cast<void *>(0x06890000), 0x3FFF);
+    //dmaFillWords(0, reinterpret_cast<void *>(0x06000000), 0x600000);
+    //dmaFillWords(0, reinterpret_cast<void *>(0x06890000), 0x3FFF);
 
 }
 
@@ -54,27 +68,44 @@ void AssetManager::loadBackground(u8 index, const unsigned int *newGfx, unsigned
     backgrounds[index] = Background(newGfx, gfxLen, newMap, mapLen, newPal, palLen);
 }
 
+int AssetManager::getBackgrounds(u8 index) {
+    assert(index <= 3);
+    return bgs[index];
+}
+
 Background& AssetManager::getBackground(u8 index) {
     assert(index < numOfBackgrounds);
     return backgrounds[index];
 }
 
 void AssetManager::showBackground(u8 index, u8 layer) {
+    if (index == static_cast<u8>(-1)) { hideBackground(layer); return; }
     const Background& bg = getBackground(index);
-    assert(layer <= 1);
+    assert(layer <= 3);
     dmaCopy(bg.getGfx(), bgGetGfxPtr(bgs[layer]), bg.getGfxLen());
     dmaCopy(bg.getMap(), bgGetMapPtr(bgs[layer]), bg.getMapLen());
 
-    vramSetBankF(VRAM_F_LCD);
-    dmaCopy(bg.getPal(), &VRAM_F_EXT_PALETTE[layer], bg.getPalLen());
-    vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT01);
-    bgExtPaletteEnable();
+
+    if (layer <= 1) {
+        vramSetBankF(VRAM_F_LCD);
+        memcpy(&VRAM_F_EXT_PALETTE[layer][0], bg.getPal(), bg.getPalLen());
+        vramSetBankF(VRAM_F_BG_EXT_PALETTE_SLOT01);
+    }
+    else if (layer <= 3) {
+        vramSetBankG(VRAM_G_LCD);
+        memcpy(&VRAM_G_EXT_PALETTE[layer-2][0], bg.getPal(), bg.getPalLen());
+        vramSetBankG(VRAM_G_BG_EXT_PALETTE_SLOT23);
+    }
 
     bgShow(bgs[layer]);
 }
 
+void AssetManager::hideBackground(u8 layer) {
+    bgHide(getBackgrounds(layer));
+}
+
 void AssetManager::loadSpriteRAM(u8 index, const unsigned int newGfx[], unsigned int gfxLen,
-                            const short unsigned int newPal[], unsigned int palLen) {
+                                 const short unsigned int newPal[], unsigned int palLen) {
     sprites[index] = Sprite(newGfx, gfxLen, newPal, palLen);
 }
 
@@ -99,8 +130,8 @@ void AssetManager::loadSpriteVRAM(u8 ramIndex, u8 oamIndex, SpriteSize size, Spr
     dmaCopy(s.getGfx(),
         oam[oamIndex].getGfxPtr(),
         s.getGfxLen());
-    dmaCopy(s.getPal(),
-        (subScreen ? SPRITE_PALETTE_SUB : SPRITE_PALETTE) + 16 * oamIndex,
+    memcpy((subScreen ? SPRITE_PALETTE_SUB : SPRITE_PALETTE) + 16 * oamIndex,
+        s.getPal(),
         s.getPalLen());
 }
 
@@ -193,7 +224,7 @@ Background::Background(const unsigned int *newGfx, unsigned int newGfxLen,
     dmaCopy(newMap, map.get(), newMapLen);
 
     pal = std::make_unique<u8[]>(newPalLen);
-    dmaCopy(newPal, pal.get(), newPalLen);
+    memcpy(pal.get(), newPal, newPalLen);
 
 }
 
@@ -205,7 +236,7 @@ Sprite::Sprite(const unsigned int newGfx[], unsigned int newGfxLen,
 
 
     pal = std::make_unique<u8[]>(newPalLen);
-    dmaCopy(newPal, pal.get(), newPalLen);
+    memcpy(pal.get(), newPal, newPalLen);
     palLen = newPalLen;
 }
 
