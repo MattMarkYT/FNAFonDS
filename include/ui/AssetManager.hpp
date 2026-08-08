@@ -8,7 +8,6 @@
 #include <array>
 #include <cstdlib>
 #include <nds.h>
-#include <vector>
 #include <memory>
 #include "shared/load.h"
 
@@ -175,7 +174,7 @@ namespace ui {
 
         /**
          * Get a Sprite from RAM
-         * @param index The index in the sprites vector to retrieve
+         * @param index The index in the sprites array to retrieve
          * @return A reference to a Sprite
          */
         Sprite& getSprite(u8 index);
